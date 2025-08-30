@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Use absolute URL to bypass proxy issues
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // Use absolute URL
+  baseURL: 'https://queue-management-system-6b88.onrender.com/api', // Use absolute URL
 });
 
 // Request interceptor to add auth token
