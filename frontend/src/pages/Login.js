@@ -8,7 +8,6 @@ import {
   Tabs,
   Tab,
   Alert,
-  Fade,
   CircularProgress,
   alpha,
   useTheme,
@@ -148,20 +147,20 @@ const Login = () => {
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         position: 'relative',
         overflow: 'hidden',
-        p: 2,
+        p: 1,
       }}
     >
-      {/* Animated background elements */}
+      {/* Animated background elements - Reduced for mobile */}
       <AnimatePresence>
-        {[1, 2, 3, 4, 5].map((i) => (
+        {[1, 2, 3].map((i) => (
           <motion.div
             key={i}
             style={{
               position: 'absolute',
               top: `${20 + i * 10}%`,
               left: `${i * 15}%`,
-              width: 100 + i * 40,
-              height: 100 + i * 40,
+              width: 60 + i * 20,
+              height: 60 + i * 20,
               borderRadius: '50%',
               background: `linear-gradient(45deg, 
                 rgba(255,255,255,${0.05 * i}), 
@@ -177,44 +176,46 @@ const Login = () => {
         ))}
       </AnimatePresence>
 
-      {/* Floating icons */}
-      <motion.div
-        style={{
-          position: 'absolute',
-          top: '15%',
-          right: '15%',
-        }}
-        variants={floatingVariants}
-        animate="animate"
-      >
-        <RocketLaunch sx={{ fontSize: 40, color: 'rgba(255,255,255,0.3)' }} />
-      </motion.div>
+      {/* Floating icons - Hidden on mobile */}
+      <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+        <motion.div
+          style={{
+            position: 'absolute',
+            top: '15%',
+            right: '15%',
+          }}
+          variants={floatingVariants}
+          animate="animate"
+        >
+          <RocketLaunch sx={{ fontSize: 40, color: 'rgba(255,255,255,0.3)' }} />
+        </motion.div>
 
-      <motion.div
-        style={{
-          position: 'absolute',
-          bottom: '20%',
-          left: '10%',
-        }}
-        variants={floatingVariants}
-        animate="animate"
-        transition={{ delay: 0.5 }}
-      >
-        <Dashboard sx={{ fontSize: 40, color: 'rgba(255,255,255,0.3)' }} />
-      </motion.div>
+        <motion.div
+          style={{
+            position: 'absolute',
+            bottom: '20%',
+            left: '10%',
+          }}
+          variants={floatingVariants}
+          animate="animate"
+          transition={{ delay: 0.5 }}
+        >
+          <Dashboard sx={{ fontSize: 40, color: 'rgba(255,255,255,0.3)' }} />
+        </motion.div>
 
-      <motion.div
-        style={{
-          position: 'absolute',
-          top: '25%',
-          left: '20%',
-        }}
-        variants={floatingVariants}
-        animate="animate"
-        transition={{ delay: 1 }}
-      >
-        <Group sx={{ fontSize: 40, color: 'rgba(255,255,255,0.3)' }} />
-      </motion.div>
+        <motion.div
+          style={{
+            position: 'absolute',
+            top: '25%',
+            left: '20%',
+          }}
+          variants={floatingVariants}
+          animate="animate"
+          transition={{ delay: 1 }}
+        >
+          <Group sx={{ fontSize: 40, color: 'rgba(255,255,255,0.3)' }} />
+        </motion.div>
+      </Box>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
@@ -225,20 +226,22 @@ const Login = () => {
           rotate: 0,
           transition: { duration: 0.3 }
         }}
+        style={{ width: '100%', maxWidth: '420px' }}
       >
         <Paper
           elevation={24}
           sx={{
-            p: 4,
-            width: 420,
+            p: { xs: 3, sm: 4 },
+            width: '100%',
             maxWidth: '100%',
-            borderRadius: 4,
+            borderRadius: { xs: 3, sm: 4 },
             background: 'rgba(255, 255, 255, 0.95)',
             backdropFilter: 'blur(20px)',
             border: '1px solid rgba(255, 255, 255, 0.3)',
-            boxShadow: '0 25px 80px rgba(0, 0, 0, 0.3)',
+            boxShadow: '0 15px 50px rgba(0, 0, 0, 0.2)',
             position: 'relative',
             overflow: 'hidden',
+            mx: 1,
             '&::before': {
               content: '""',
               position: 'absolute',
@@ -263,7 +266,7 @@ const Login = () => {
             animate="visible"
           >
             {/* Header Section */}
-            <Box sx={{ textAlign: 'center', mb: 4 }}>
+            <Box sx={{ textAlign: 'center', mb: 3 }}>
               <motion.div
                 variants={itemVariants}
                 whileHover={{ scale: 1.05 }}
@@ -276,7 +279,7 @@ const Login = () => {
                   fontWeight="800"
                   sx={{
                     ...gradientText,
-                    fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                    fontSize: { xs: '1.8rem', sm: '2.5rem', md: '3rem' },
                     mb: 1,
                   }}
                 >
@@ -289,10 +292,10 @@ const Login = () => {
                   color="text.secondary" 
                   sx={{ 
                     opacity: 0.8,
-                    fontSize: '1.1rem'
+                    fontSize: { xs: '0.9rem', sm: '1.1rem' }
                   }}
                 >
-                  Streamline your queue management with style
+                  Streamline your queue management
                 </Typography>
               </motion.div>
             </Box>
@@ -313,10 +316,11 @@ const Login = () => {
                   sx={{
                     '& .MuiTab-root': {
                       fontWeight: '600',
-                      fontSize: '1rem',
+                      fontSize: { xs: '0.9rem', sm: '1rem' },
                       textTransform: 'none',
                       borderRadius: 2,
-                      minHeight: 48,
+                      minHeight: 44,
+                      px: { xs: 1, sm: 2 },
                       '&.Mui-selected': {
                         background: 'linear-gradient(135deg, #667eea, #764ba2)',
                         color: 'white',
@@ -348,6 +352,7 @@ const Login = () => {
                       boxShadow: '0 4px 20px rgba(239, 68, 68, 0.2)',
                       background: 'rgba(239, 68, 68, 0.1)',
                       backdropFilter: 'blur(10px)',
+                      fontSize: { xs: '0.8rem', sm: 'inherit' }
                     }}
                     onClose={() => setError('')}
                   >
@@ -373,7 +378,7 @@ const Login = () => {
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <Person sx={{ color: 'text.secondary' }} />
+                            <Person sx={{ color: 'text.secondary', fontSize: { xs: '1rem', sm: '1.2rem' } }} />
                           </InputAdornment>
                         ),
                       }}
@@ -381,6 +386,7 @@ const Login = () => {
                         '& .MuiOutlinedInput-root': {
                           borderRadius: 2,
                           background: 'rgba(255, 255, 255, 0.8)',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
                           '&:hover fieldset': {
                             borderColor: theme.palette.primary.main,
                           },
@@ -406,7 +412,7 @@ const Login = () => {
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <Lock sx={{ color: 'text.secondary' }} />
+                            <Lock sx={{ color: 'text.secondary', fontSize: { xs: '1rem', sm: '1.2rem' } }} />
                           </InputAdornment>
                         ),
                         endAdornment: (
@@ -415,9 +421,10 @@ const Login = () => {
                               aria-label="toggle password visibility"
                               onClick={handleClickShowPassword}
                               edge="end"
-                              sx={{ color: 'text.secondary' }}
+                              sx={{ color: 'text.secondary', p: { xs: 0.5, sm: 1 } }}
+                              size="small"
                             >
-                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                              {showPassword ? <VisibilityOff sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }} /> : <Visibility sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }} />}
                             </IconButton>
                           </InputAdornment>
                         ),
@@ -426,6 +433,7 @@ const Login = () => {
                         '& .MuiOutlinedInput-root': {
                           borderRadius: 2,
                           background: 'rgba(255, 255, 255, 0.8)',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
                           '&:hover fieldset': {
                             borderColor: theme.palette.primary.main,
                           },
@@ -449,10 +457,10 @@ const Login = () => {
                       size="large"
                       sx={{ 
                         mt: 3,
-                        py: 1.5,
+                        py: { xs: 1.2, sm: 1.5 },
                         borderRadius: 2,
                         fontWeight: '600',
-                        fontSize: '1.1rem',
+                        fontSize: { xs: '1rem', sm: '1.1rem' },
                         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                         boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
                         '&:hover': {
@@ -475,6 +483,7 @@ const Login = () => {
                         '&:hover::before': {
                           left: '100%',
                         },
+                        minHeight: { xs: '48px', sm: '56px' }
                       }}
                       disabled={loading}
                     >
@@ -483,7 +492,7 @@ const Login = () => {
                       ) : (
                         <>
                           Sign In
-                          <Box component="span" sx={{ ml: 1, fontSize: '1.2rem' }}>→</Box>
+                          <Box component="span" sx={{ ml: 1, fontSize: { xs: '1.1rem', sm: '1.2rem' } }}>→</Box>
                         </>
                       )}
                     </Button>
@@ -504,7 +513,7 @@ const Login = () => {
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <Person sx={{ color: 'text.secondary' }} />
+                            <Person sx={{ color: 'text.secondary', fontSize: { xs: '1rem', sm: '1.2rem' } }} />
                           </InputAdornment>
                         ),
                       }}
@@ -512,6 +521,7 @@ const Login = () => {
                         '& .MuiOutlinedInput-root': {
                           borderRadius: 2,
                           background: 'rgba(255, 255, 255, 0.8)',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
                           '&:hover fieldset': {
                             borderColor: theme.palette.primary.main,
                           },
@@ -537,7 +547,7 @@ const Login = () => {
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position="start">
-                            <Lock sx={{ color: 'text.secondary' }} />
+                            <Lock sx={{ color: 'text.secondary', fontSize: { xs: '1rem', sm: '1.2rem' } }} />
                           </InputAdornment>
                         ),
                         endAdornment: (
@@ -546,9 +556,10 @@ const Login = () => {
                               aria-label="toggle password visibility"
                               onClick={handleClickShowPassword}
                               edge="end"
-                              sx={{ color: 'text.secondary' }}
+                              sx={{ color: 'text.secondary', p: { xs: 0.5, sm: 1 } }}
+                              size="small"
                             >
-                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                              {showPassword ? <VisibilityOff sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }} /> : <Visibility sx={{ fontSize: { xs: '1rem', sm: '1.2rem' } }} />}
                             </IconButton>
                           </InputAdornment>
                         ),
@@ -557,6 +568,7 @@ const Login = () => {
                         '& .MuiOutlinedInput-root': {
                           borderRadius: 2,
                           background: 'rgba(255, 255, 255, 0.8)',
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
                           '&:hover fieldset': {
                             borderColor: theme.palette.primary.main,
                           },
@@ -580,10 +592,10 @@ const Login = () => {
                       size="large"
                       sx={{ 
                         mt: 3,
-                        py: 1.5,
+                        py: { xs: 1.2, sm: 1.5 },
                         borderRadius: 2,
                         fontWeight: '600',
-                        fontSize: '1.1rem',
+                        fontSize: { xs: '1rem', sm: '1.1rem' },
                         background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
                         boxShadow: '0 8px 25px rgba(79, 172, 254, 0.4)',
                         '&:hover': {
@@ -606,6 +618,7 @@ const Login = () => {
                         '&:hover::before': {
                           left: '100%',
                         },
+                        minHeight: { xs: '48px', sm: '56px' }
                       }}
                       disabled={loading}
                     >
@@ -614,7 +627,7 @@ const Login = () => {
                       ) : (
                         <>
                           Create Account
-                          <Box component="span" sx={{ ml: 1, fontSize: '1.2rem' }}>🚀</Box>
+                          <Box component="span" sx={{ ml: 1, fontSize: { xs: '1.1rem', sm: '1.2rem' } }}>🚀</Box>
                         </>
                       )}
                     </Button>
@@ -631,7 +644,7 @@ const Login = () => {
               transition={{ delay: 0.5 }}
             >
               <Box sx={{ mt: 3, textAlign: 'center' }}>
-                <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.7 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ opacity: 0.7, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                   {activeTab === 0 ? "Don't have an account? " : "Already have an account? "}
                   <Box
                     component="span"

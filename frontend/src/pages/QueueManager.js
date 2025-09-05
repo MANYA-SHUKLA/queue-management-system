@@ -14,6 +14,8 @@ import {
   Alert,
   CircularProgress,
   Divider,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -37,6 +39,9 @@ const QueueManager = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [addingToken, setAddingToken] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isSmallMobile = useMediaQuery('(max-width:480px)');
 
   useEffect(() => {
     fetchQueueData();
@@ -144,9 +149,9 @@ const QueueManager = () => {
   const cancelledTokens = tokens.filter(token => token.status === 'cancelled');
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4" component="h1">
+    <Box sx={{ px: { xs: 1, sm: 2 } }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexDirection={{ xs: 'column', sm: 'row' }} gap={2}>
+        <Typography variant="h4" component="h1" sx={{ fontSize: { xs: '1.75rem', sm: '2.125rem' }, textAlign: { xs: 'center', sm: 'left' } }}>
           {queue.name}
         </Typography>
         <Button
@@ -154,6 +159,8 @@ const QueueManager = () => {
           startIcon={<AddIcon />}
           onClick={handleAddToken}
           disabled={addingToken}
+          size={isSmallMobile ? "small" : "medium"}
+          sx={{ minWidth: { xs: '100%', sm: 'auto' } }}
         >
           {addingToken ? 'Adding...' : 'Add Token'}
         </Button>
@@ -165,30 +172,32 @@ const QueueManager = () => {
         </Alert>
       )}
 
-      <Grid container spacing={3}>
+      <Grid container spacing={isSmallMobile ? 1 : 3}>
         <Grid item xs={12} md={8}>
           <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+              <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
                 Tokens in Queue ({tokens.length})
               </Typography>
               <Divider sx={{ mb: 2 }} />
               
               {servingToken && (
                 <Box sx={{ mb: 3 }}>
-                  <Typography variant="subtitle1" gutterBottom color="primary">
+                  <Typography variant="subtitle1" gutterBottom color="primary" sx={{ fontSize: { xs: '0.9rem', sm: '1rem' } }}>
                     Currently Serving:
                   </Typography>
                   <Card sx={{ bgcolor: 'primary.light', color: 'primary.contrastText' }}>
-                    <CardContent>
-                      <Box display="flex" justifyContent="space-between" alignItems="center">
-                        <Typography variant="h6">
+                    <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                      <Box display="flex" justifyContent="space-between" alignItems="center" flexDirection={{ xs: 'column', sm: 'row' }} gap={2}>
+                        <Typography variant="h6" sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' }, textAlign: { xs: 'center', sm: 'left' } }}>
                           Token #{servingToken.number}
                         </Typography>
                         <Button
                           variant="contained"
                           color="secondary"
                           onClick={() => handleComplete(servingToken._id)}
+                          size={isSmallMobile ? "small" : "medium"}
+                          sx={{ minWidth: { xs: '100%', sm: 'auto' } }}
                         >
                           Complete Service
                         </Button>
@@ -200,12 +209,12 @@ const QueueManager = () => {
 
               {waitingTokens.length === 0 ? (
                 <Box textAlign="center" py={4}>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                     No tokens waiting in this queue.
                   </Typography>
                 </Box>
               ) : (
-                <List>
+                <List sx={{ p: 0 }}>
                   <AnimatePresence>
                     {waitingTokens.map((token) => (
                       <motion.div
@@ -222,50 +231,64 @@ const QueueManager = () => {
                             borderRadius: 1,
                             mb: 1,
                             bgcolor: 'background.paper',
+                            p: { xs: 1, sm: 2 },
                           }}
                         >
                           <ListItemText
                             primary={`Token #${token.number}`}
                             secondary={`Position: ${token.position}`}
+                            sx={{
+                              '& .MuiListItemText-primary': {
+                                fontSize: { xs: '0.9rem', sm: '1rem' }
+                              },
+                              '& .MuiListItemText-secondary': {
+                                fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                              }
+                            }}
                           />
                           <ListItemSecondaryAction>
-                            <Box display="flex" gap={1}>
+                            <Box display="flex" gap={0.5} flexWrap="wrap">
                               <IconButton
                                 size="small"
                                 onClick={() => handleMoveUp(token._id)}
                                 disabled={token.position === 1}
                                 color="primary"
+                                sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}
                               >
-                                <ArrowUpIcon />
+                                <ArrowUpIcon fontSize={isSmallMobile ? "small" : "medium"} />
                               </IconButton>
                               <IconButton
                                 size="small"
                                 onClick={() => handleMoveDown(token._id)}
                                 disabled={token.position === waitingTokens.length}
                                 color="primary"
+                                sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}
                               >
-                                <ArrowDownIcon />
+                                <ArrowDownIcon fontSize={isSmallMobile ? "small" : "medium"} />
                               </IconButton>
                               <IconButton
                                 size="small"
                                 onClick={() => handleAssign(token._id)}
                                 color="primary"
+                                sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}
                               >
-                                <CheckIcon />
+                                <CheckIcon fontSize={isSmallMobile ? "small" : "medium"} />
                               </IconButton>
                               <IconButton
                                 size="small"
                                 onClick={() => handleCancel(token._id)}
                                 color="error"
+                                sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}
                               >
-                                <CloseIcon />
+                                <CloseIcon fontSize={isSmallMobile ? "small" : "medium"} />
                               </IconButton>
                               <IconButton
                                 size="small"
                                 onClick={() => handleDelete(token._id)}
                                 color="error"
+                                sx={{ fontSize: { xs: '0.8rem', sm: '1rem' } }}
                               >
-                                <DeleteIcon />
+                                <DeleteIcon fontSize={isSmallMobile ? "small" : "medium"} />
                               </IconButton>
                             </Box>
                           </ListItemSecondaryAction>
@@ -281,34 +304,34 @@ const QueueManager = () => {
 
         <Grid item xs={12} md={4}>
           <Card>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+              <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
                 Queue Stats
               </Typography>
               <Divider sx={{ mb: 2 }} />
               <Box>
-                <Typography variant="body2" gutterBottom>
+                <Typography variant="body2" gutterBottom sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                   Total Tokens: {tokens.length}
                 </Typography>
-                <Typography variant="body2" gutterBottom>
+                <Typography variant="body2" gutterBottom sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                   Waiting: {waitingTokens.length}
                 </Typography>
-                <Typography variant="body2" gutterBottom>
+                <Typography variant="body2" gutterBottom sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                   Serving: {servingToken ? 1 : 0}
                 </Typography>
-                <Typography variant="body2" gutterBottom>
+                <Typography variant="body2" gutterBottom sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                   Completed: {completedTokens.length}
                 </Typography>
-                <Typography variant="body2">
+                <Typography variant="body2" sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
                   Cancelled: {cancelledTokens.length}
                 </Typography>
               </Box>
             </CardContent>
           </Card>
 
-          <Card sx={{ mt: 3 }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
+          <Card sx={{ mt: isSmallMobile ? 2 : 3 }}>
+            <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+              <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
                 Quick Actions
               </Typography>
               <Divider sx={{ mb: 2 }} />
@@ -318,6 +341,7 @@ const QueueManager = () => {
                   onClick={handleAddToken}
                   disabled={addingToken}
                   startIcon={<AddIcon />}
+                  size={isSmallMobile ? "small" : "medium"}
                 >
                   Add Token
                 </Button>
@@ -325,12 +349,14 @@ const QueueManager = () => {
                   variant="outlined"
                   onClick={() => navigate(`/analytics/${id}`)}
                   startIcon={<AnalyticsIcon />}
+                  size={isSmallMobile ? "small" : "medium"}
                 >
                   View Analytics
                 </Button>
                 <Button
                   variant="outlined"
                   onClick={() => navigate('/')}
+                  size={isSmallMobile ? "small" : "medium"}
                 >
                   Back to Dashboard
                 </Button>
@@ -339,15 +365,20 @@ const QueueManager = () => {
           </Card>
 
           {completedTokens.length > 0 && (
-            <Card sx={{ mt: 3 }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
+            <Card sx={{ mt: isSmallMobile ? 2 : 3 }}>
+              <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                <Typography variant="h6" gutterBottom sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
                   Recently Completed
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
                 <Box>
                   {completedTokens.slice(-5).reverse().map((token) => (
-                    <Typography key={token._id} variant="body2" gutterBottom>
+                    <Typography 
+                      key={token._id} 
+                      variant="body2" 
+                      gutterBottom
+                      sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                    >
                       Token #{token.number} - {token.waitTime} min wait
                     </Typography>
                   ))}

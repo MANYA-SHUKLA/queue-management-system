@@ -29,6 +29,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const drawerWidth = 280;
+const mobileDrawerWidth = 300;
 
 // Animation variants
 const menuItemVariants = {
@@ -49,6 +50,7 @@ const Layout = ({ children }) => {
   const [hoveredItem, setHoveredItem] = useState(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isSmallMobile = useMediaQuery('(max-width:480px)');
   const navigate = useNavigate();
   const location = useLocation();
   const { currentUser, logout } = useAuth();
@@ -80,7 +82,7 @@ const Layout = ({ children }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <Box sx={{ p: 3, textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <Box sx={{ p: isSmallMobile ? 2 : 3, textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           <motion.div
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -95,6 +97,7 @@ const Layout = ({ children }) => {
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 mb: 2,
+                fontSize: isSmallMobile ? '1.5rem' : '2rem',
               }}
             >
               Queue Manager
@@ -109,16 +112,16 @@ const Layout = ({ children }) => {
             >
               <Avatar
                 sx={{
-                  width: 50,
-                  height: 50,
+                  width: isSmallMobile ? 40 : 50,
+                  height: isSmallMobile ? 40 : 50,
                   background: 'linear-gradient(135deg, #818CF8 0%, #34D399 100%)',
                 }}
               >
-                <PersonIcon />
+                <PersonIcon sx={{ fontSize: isSmallMobile ? '1.2rem' : '1.5rem' }} />
               </Avatar>
             </motion.div>
             <Box>
-              <Typography variant="body1" fontWeight="600">
+              <Typography variant="body1" fontWeight="600" fontSize={isSmallMobile ? '0.9rem' : '1rem'}>
                 {currentUser?.username}
               </Typography>
               <Chip
@@ -127,8 +130,9 @@ const Layout = ({ children }) => {
                 sx={{
                   background: 'rgba(255,255,255,0.1)',
                   color: 'white',
-                  fontSize: '0.7rem',
+                  fontSize: isSmallMobile ? '0.6rem' : '0.7rem',
                   height: 20,
+                  mt: 0.5,
                 }}
               />
             </Box>
@@ -137,7 +141,7 @@ const Layout = ({ children }) => {
       </motion.div>
 
       {/* Navigation Menu */}
-      <List sx={{ px: 2, mt: 2 }}>
+      <List sx={{ px: isSmallMobile ? 1 : 2, mt: 2 }}>
         <AnimatePresence>
           {menuItems.map((item, index) => (
             <motion.div
@@ -159,6 +163,7 @@ const Layout = ({ children }) => {
                 sx={{
                   borderRadius: 2,
                   mb: 1,
+                  py: isSmallMobile ? 1 : 1.5,
                   background: location.pathname === item.path 
                     ? `linear-gradient(135deg, ${alpha(item.color, 0.2)} 0%, ${alpha(item.color, 0.1)} 100%)`
                     : 'transparent',
@@ -173,11 +178,15 @@ const Layout = ({ children }) => {
                   transition: 'all 0.3s ease',
                 }}
               >
-                <ListItemIcon sx={{ color: location.pathname === item.path ? item.color : 'rgba(255,255,255,0.7)', minWidth: 40 }}>
+                <ListItemIcon sx={{ 
+                  color: location.pathname === item.path ? item.color : 'rgba(255,255,255,0.7)', 
+                  minWidth: isSmallMobile ? 30 : 40,
+                }}>
                   {React.cloneElement(item.icon, {
                     sx: { 
                       color: location.pathname === item.path ? item.color : 'rgba(255,255,255,0.7)',
                       transition: 'all 0.3s ease',
+                      fontSize: isSmallMobile ? '1.2rem' : '1.5rem',
                     }
                   })}
                 </ListItemIcon>
@@ -188,6 +197,7 @@ const Layout = ({ children }) => {
                       fontWeight: location.pathname === item.path ? '600' : '400',
                       color: location.pathname === item.path ? item.color : 'rgba(255,255,255,0.9)',
                       transition: 'all 0.3s ease',
+                      fontSize: isSmallMobile ? '0.9rem' : '1rem',
                     }
                   }}
                 />
@@ -226,6 +236,7 @@ const Layout = ({ children }) => {
             sx={{
               borderRadius: 2,
               mt: 8,
+              py: isSmallMobile ? 1 : 1.5,
               background: 'rgba(239, 68, 68, 0.1)',
               border: '1px solid rgba(239, 68, 68, 0.2)',
               '&:hover': {
@@ -236,8 +247,11 @@ const Layout = ({ children }) => {
               transition: 'all 0.3s ease',
             }}
           >
-            <ListItemIcon sx={{ color: 'rgba(239, 68, 68, 0.8)', minWidth: 40 }}>
-              <LogoutIcon />
+            <ListItemIcon sx={{ 
+              color: 'rgba(239, 68, 68, 0.8)', 
+              minWidth: isSmallMobile ? 30 : 40,
+            }}>
+              <LogoutIcon sx={{ fontSize: isSmallMobile ? '1.2rem' : '1.5rem' }} />
             </ListItemIcon>
             <ListItemText 
               primary="Logout" 
@@ -245,6 +259,7 @@ const Layout = ({ children }) => {
                 '& .MuiTypography-root': {
                   color: 'rgba(239, 68, 68, 0.9)',
                   fontWeight: '500',
+                  fontSize: isSmallMobile ? '0.9rem' : '1rem',
                 }
               }}
             />
@@ -267,9 +282,10 @@ const Layout = ({ children }) => {
           color: 'text.primary',
           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
           borderBottom: '1px solid rgba(0, 0, 0, 0.05)',
+          zIndex: theme.zIndex.drawer + 1,
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ minHeight: { xs: '56px', sm: '64px' } }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -287,8 +303,17 @@ const Layout = ({ children }) => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
+            style={{ flexGrow: 1 }}
           >
-            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, fontWeight: '600' }}>
+            <Typography 
+              variant="h6" 
+              noWrap 
+              component="div" 
+              sx={{ 
+                fontWeight: '600',
+                fontSize: { xs: '1rem', sm: '1.25rem' }
+              }}
+            >
               {location.pathname === '/' && 'Dashboard'}
               {location.pathname === '/queues' && 'Queue Management'}
               {location.pathname.includes('/queue/') && 'Queue Details'}
@@ -303,16 +328,22 @@ const Layout = ({ children }) => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <Avatar
                 sx={{
-                  width: 40,
-                  height: 40,
+                  width: { xs: 32, sm: 40 },
+                  height: { xs: 32, sm: 40 },
                   background: 'linear-gradient(135deg, #818CF8 0%, #34D399 100%)',
-                  fontSize: '1rem',
+                  fontSize: { xs: '0.8rem', sm: '1rem' },
                   fontWeight: '600',
                 }}
               >
                 {currentUser?.username?.charAt(0)?.toUpperCase()}
               </Avatar>
-              <Typography variant="body2" sx={{ display: { xs: 'none', sm: 'block' } }}>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  display: { xs: 'none', sm: 'block' },
+                  fontSize: { sm: '0.875rem', md: '1rem' }
+                }}
+              >
                 Welcome, {currentUser?.username}
               </Typography>
             </Box>
@@ -334,7 +365,7 @@ const Layout = ({ children }) => {
             display: { xs: 'block', md: 'none' },
             '& .MuiDrawer-paper': { 
               boxSizing: 'border-box', 
-              width: drawerWidth,
+              width: mobileDrawerWidth,
               border: 'none',
             },
           }}
@@ -362,12 +393,12 @@ const Layout = ({ children }) => {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: { xs: 2, sm: 3 },
           width: { md: `calc(100% - ${drawerWidth}px)` },
           minHeight: '100vh',
         }}
       >
-        <Toolbar />
+        <Toolbar sx={{ minHeight: { xs: '56px', sm: '64px' } }} />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

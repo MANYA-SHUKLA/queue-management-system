@@ -17,6 +17,8 @@ import {
   Chip,
   Menu,
   MenuItem,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -43,6 +45,9 @@ const Dashboard = () => {
   const [actionAnchorEl, setActionAnchorEl] = useState(null);
   const [selectedQueue, setSelectedQueue] = useState(null);
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmallMobile = useMediaQuery('(max-width:480px)');
 
   useEffect(() => {
     fetchQueues();
@@ -128,38 +133,44 @@ const Dashboard = () => {
   }
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
+    <Box sx={{ px: { xs: 1, sm: 2 } }}>
+      <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={3} flexDirection={{ xs: 'column', sm: 'row' }} gap={2}>
         <Box>
-          <Typography variant="h4" component="h1" gutterBottom>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.75rem', sm: '2.125rem' } }}>
             Queue Dashboard
           </Typography>
-          <Typography variant="body1" color="text.secondary">
+          <Typography variant="body1" color="text.secondary" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
             Manage all your queues in one place
           </Typography>
         </Box>
         
-        <Box display="flex" gap={1} flexWrap="wrap">
+        <Box display="flex" gap={1} flexWrap="wrap" justifyContent={{ xs: 'flex-start', sm: 'flex-end' }} width={{ xs: '100%', sm: 'auto' }}>
           <Button
             startIcon={<RefreshIcon />}
             onClick={fetchQueues}
             variant="outlined"
+            size={isSmallMobile ? "small" : "medium"}
+            sx={{ minWidth: isSmallMobile ? 'auto' : '64px' }}
           >
-            Refresh
+            {isSmallMobile ? '' : 'Refresh'}
           </Button>
           <Button
             startIcon={<SortIcon />}
             onClick={(e) => setSortAnchorEl(e.currentTarget)}
             variant="outlined"
+            size={isSmallMobile ? "small" : "medium"}
+            sx={{ minWidth: isSmallMobile ? 'auto' : '64px' }}
           >
-            Sort
+            {isSmallMobile ? '' : 'Sort'}
           </Button>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
             onClick={() => setCreateDialogOpen(true)}
+            size={isSmallMobile ? "small" : "medium"}
+            sx={{ minWidth: isSmallMobile ? 'auto' : '110px' }}
           >
-            New Queue
+            {isSmallMobile ? '' : 'New Queue'}
           </Button>
         </Box>
       </Box>
@@ -210,26 +221,27 @@ const Dashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <CardContent sx={{ textAlign: 'center', py: 8 }}>
-            <Typography variant="h6" color="text.secondary" gutterBottom>
+          <CardContent sx={{ textAlign: 'center', py: 8, px: { xs: 2, sm: 4 } }}>
+            <Typography variant="h6" color="text.secondary" gutterBottom sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}>
               No queues yet
             </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3, fontSize: { xs: '0.8rem', sm: '0.875rem' } }}>
               Create your first queue to get started
             </Typography>
             <Button
               variant="contained"
               startIcon={<AddIcon />}
               onClick={() => setCreateDialogOpen(true)}
+              size={isSmallMobile ? "small" : "medium"}
             >
               Create Queue
             </Button>
           </CardContent>
         </MotionCard>
       ) : (
-        <Grid container spacing={3}>
+        <Grid container spacing={isSmallMobile ? 1 : 2}>
           {queues.map((queue, index) => (
-            <Grid item xs={12} md={6} lg={4} key={queue._id}>
+            <Grid item xs={12} sm={6} md={4} key={queue._id}>
               <MotionCard
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -237,25 +249,47 @@ const Dashboard = () => {
                 whileHover={{ y: -5 }}
                 sx={{ height: '100%' }}
               >
-                <CardContent>
+                <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                   <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-                    <Typography variant="h6" gutterBottom sx={{ flexGrow: 1, pr: 1 }}>
+                    <Typography 
+                      variant="h6" 
+                      gutterBottom 
+                      sx={{ 
+                        flexGrow: 1, 
+                        pr: 1,
+                        fontSize: { xs: '1rem', sm: '1.25rem' },
+                        wordBreak: 'break-word'
+                      }}
+                    >
                       {queue.name}
                     </Typography>
                     <IconButton
                       size="small"
                       onClick={(e) => handleActionMenuOpen(e, queue)}
                     >
-                      <MoreVertIcon />
+                      <MoreVertIcon fontSize={isSmallMobile ? "small" : "medium"} />
                     </IconButton>
                   </Box>
                   
-                  <Typography variant="body2" color="text.secondary" gutterBottom>
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary" 
+                    gutterBottom 
+                    sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                  >
                     Created: {new Date(queue.createdAt).toLocaleDateString()}
                   </Typography>
                   
                   {queue.description && (
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary" 
+                      sx={{ 
+                        mb: 2, 
+                        fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                        wordBreak: 'break-word'
+                      }}
+                    >
                       {queue.description}
                     </Typography>
                   )}
@@ -264,27 +298,39 @@ const Dashboard = () => {
                     label={queue.isActive ? 'Active' : 'Inactive'}
                     color={queue.isActive ? 'success' : 'default'}
                     size="small"
-                    sx={{ mb: 2 }}
+                    sx={{ 
+                      mb: 2,
+                      fontSize: { xs: '0.7rem', sm: '0.8rem' },
+                      height: { xs: 24, sm: 32 }
+                    }}
                   />
                   
                   <Box mt={2} display="flex" gap={1} flexWrap="wrap">
                     <Button
                       variant="contained"
-                      size="small"
-                      startIcon={<PlayIcon />}
+                      size={isSmallMobile ? "small" : "medium"}
+                      startIcon={isSmallMobile ? null : <PlayIcon />}
                       onClick={() => navigate(`/queue/${queue._id}`)}
-                      sx={{ flexGrow: 1 }}
+                      sx={{ 
+                        flexGrow: 1,
+                        fontSize: { xs: '0.7rem', sm: '0.875rem' },
+                        minWidth: isSmallMobile ? '60px' : 'auto'
+                      }}
                     >
-                      Manage
+                      {isSmallMobile ? 'Manage' : 'Manage'}
                     </Button>
                     <Button
                       variant="outlined"
-                      size="small"
-                      startIcon={<AnalyticsIcon />}
+                      size={isSmallMobile ? "small" : "medium"}
+                      startIcon={isSmallMobile ? null : <AnalyticsIcon />}
                       onClick={() => navigate(`/analytics/${queue._id}`)}
-                      sx={{ flexGrow: 1 }}
+                      sx={{ 
+                        flexGrow: 1,
+                        fontSize: { xs: '0.7rem', sm: '0.875rem' },
+                        minWidth: isSmallMobile ? '60px' : 'auto'
+                      }}
                     >
-                      Analytics
+                      {isSmallMobile ? 'Stats' : 'Analytics'}
                     </Button>
                   </Box>
                 </CardContent>
@@ -300,9 +346,12 @@ const Dashboard = () => {
         onClose={() => setCreateDialogOpen(false)}
         maxWidth="sm"
         fullWidth
+        fullScreen={isMobile}
       >
-        <DialogTitle>Create New Queue</DialogTitle>
-        <DialogContent>
+        <DialogTitle sx={{ fontSize: { xs: '1.25rem', sm: '1.5rem' }, p: { xs: 2, sm: 3 } }}>
+          Create New Queue
+        </DialogTitle>
+        <DialogContent sx={{ p: { xs: 2, sm: 3 } }}>
           <TextField
             autoFocus
             margin="dense"
@@ -313,6 +362,12 @@ const Dashboard = () => {
             value={newQueueName}
             onChange={(e) => setNewQueueName(e.target.value)}
             sx={{ mb: 2 }}
+            InputProps={{
+              sx: { fontSize: { xs: '0.9rem', sm: '1rem' } }
+            }}
+            InputLabelProps={{
+              sx: { fontSize: { xs: '0.9rem', sm: '1rem' } }
+            }}
           />
           <TextField
             margin="dense"
@@ -321,17 +376,29 @@ const Dashboard = () => {
             fullWidth
             variant="outlined"
             multiline
-            rows={3}
+            rows={isMobile ? 2 : 3}
             value={newQueueDescription}
             onChange={(e) => setNewQueueDescription(e.target.value)}
+            InputProps={{
+              sx: { fontSize: { xs: '0.9rem', sm: '1rem' } }
+            }}
+            InputLabelProps={{
+              sx: { fontSize: { xs: '0.9rem', sm: '1rem' } }
+            }}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setCreateDialogOpen(false)}>Cancel</Button>
+        <DialogActions sx={{ p: { xs: 2, sm: 3 } }}>
+          <Button 
+            onClick={() => setCreateDialogOpen(false)}
+            sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}
+          >
+            Cancel
+          </Button>
           <Button 
             onClick={handleCreateQueue} 
             variant="contained"
             disabled={creating || !newQueueName.trim()}
+            sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}
           >
             {creating ? 'Creating...' : 'Create Queue'}
           </Button>

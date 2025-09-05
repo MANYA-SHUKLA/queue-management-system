@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { useMediaQuery } from '@mui/material';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
@@ -32,12 +33,34 @@ const theme = createTheme({
     fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
     h4: {
       fontWeight: 600,
+      fontSize: '2rem',
+      '@media (max-width:600px)': {
+        fontSize: '1.5rem',
+      },
     },
     h5: {
       fontWeight: 600,
+      fontSize: '1.5rem',
+      '@media (max-width:600px)': {
+        fontSize: '1.25rem',
+      },
     },
     h6: {
       fontWeight: 600,
+      fontSize: '1.25rem',
+      '@media (max-width:600px)': {
+        fontSize: '1.1rem',
+      },
+    },
+    body1: {
+      '@media (max-width:600px)': {
+        fontSize: '0.875rem',
+      },
+    },
+    body2: {
+      '@media (max-width:600px)': {
+        fontSize: '0.8rem',
+      },
     },
   },
   shape: {
@@ -49,6 +72,10 @@ const theme = createTheme({
         root: {
           textTransform: 'none',
           fontWeight: 500,
+          '@media (max-width:600px)': {
+            fontSize: '0.875rem',
+            padding: '6px 12px',
+          },
         },
       },
     },
@@ -57,8 +84,49 @@ const theme = createTheme({
         root: {
           boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
           borderRadius: 12,
+          '@media (max-width:600px)': {
+            borderRadius: 8,
+            margin: '8px',
+          },
         },
       },
+    },
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          '@media (max-width:600px)': {
+            paddingLeft: '12px',
+            paddingRight: '12px',
+          },
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          '@media (max-width:600px)': {
+            padding: '0 8px',
+          },
+        },
+      },
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          '@media (max-width:600px)': {
+            width: '280px',
+          },
+        },
+      },
+    },
+  },
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 900,
+      lg: 1200,
+      xl: 1536,
     },
   },
 });
@@ -69,8 +137,26 @@ function ProtectedRoute({ children }) {
 }
 
 function App() {
+  const isMobile = useMediaQuery('(max-width:600px)');
+
+  const responsiveTheme = React.useMemo(() => createTheme({
+    ...theme,
+    components: {
+      ...theme.components,
+      MuiTypography: {
+        styleOverrides: {
+          root: {
+            '@media (max-width:600px)': {
+              fontSize: '0.875rem !important',
+            },
+          },
+        },
+      },
+    },
+  }), [isMobile]);
+
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={responsiveTheme}>
       <CssBaseline />
       <AuthProvider>
         <Router>
